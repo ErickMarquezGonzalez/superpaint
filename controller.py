@@ -4,19 +4,26 @@ class MainController:
     def __init__(self, main_window, ui):
         self.main_window = main_window
         self.ui = ui
+        self.canvas = ui.widget
         self.connect_signals()
     
     def connect_signals(self):
         self.ui.txtColor.textChanged.connect(self.update_color)
+        self.ui.slider.valueChanged.connect(self.upadate_pincel)
+        self.ui.btnBorrador.clicked.connect(self.set_eraser)
 
-    def upadate_pincel(self):
-        width = self.ui.silder.value
-        print(width)
+    def set_eraser(self):
+        self.canvas.pen_color = QColor("042069")
+
+    def upadate_pincel(self, width):
+        self.canvas.pen_width = width
+
     
     def update_color(self):
         color = self.ui.txtColor.toPlainText().strip()
         print(color)
         fondo = QColor(color)
+        self.canvas.pen_color = fondo
         if fondo.isValid():
             self.ui.txtColor.setStyleSheet(f"background-color: {color}; color:{self.color_inverso(fondo).name()}")
     
