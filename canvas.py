@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget
+from PyQt6.QtWidgets import QWidget, QMessageBox, QFileDialog
 from PyQt6.QtCore import Qt, QPoint, QRectF
 from PyQt6.QtGui import QPainter, QPen, QImage
 from PyQt6.QtGui import QColor
@@ -62,3 +62,60 @@ class Canvas(QWidget):
             #painter.drawEllipse(end_point, 30, 30)
         self.update()
         self.last_point = end_point
+
+    def clear(self):
+        self.image.fill(QColor("042069"))
+        self.update()
+
+    def save_image(self):
+        file_path = QFileDialog.getSaveFileName(
+            self,
+            "Save image",
+            "",
+            "PNG files (*.png);;All files (*)"
+        )
+
+        if file_path:
+            print(file_path)
+            self.image.save(file_path[0])
+            QMessageBox.information(self, "Super Paint", "Imagen guardada correctamente")
+
+    def open_image(self):
+        file_path = QFileDialog.getOpenFileName(
+            self,
+            "Abir Image",
+            "",
+            "PNG Files (*.png);;All Files (*)"
+        )
+
+        if file_path:
+            self.image = QImage(file_path[0])
+            self.update()
+    
+    def draw_grid(self, value):
+        self.clear()
+        with QPainter(self.image) as painter:
+            painter.setPen(QPen(QColor("#f00"), 1, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin))
+            w = self.image.width()
+            h = self.image.height()
+            r = int(w / value)
+            for i in range(int(value)):
+                painter.drawLine(r*i, 0, r*i, h)
+                painter.drawLine(0, r*i, w, r*i)
+        self.update()
+
+    def draw_star(self, value):
+        self.clear()
+        with QPainter(self.image) as painter:
+            painter.setPen(QPen(QColor("#f00"), 1, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin))
+            w = self.image.width()
+            h = self.image.height()
+            r = int(w / value)
+            self.clear
+            mid_w = w//2
+            mid_h = h//2
+            painter.drawLine(mid_w, 0, mid_w, h)
+            painter.drawLine(0, mid_h, w, mid_h)
+            r = int(w / value)
+            for x in range(1, r):
+                painter.drawLine(mid_w, r*x, (mid_w + (r*x)), mid_h)
